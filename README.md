@@ -151,16 +151,45 @@ where `move_action = 1` if at least one bike is actually moved, and `0` otherwis
 ### Transition at Time t
 
 ```mermaid
-flowchart TB
-    A["1. Observe state<br/>s_t = (h_t, b1_t, b2_t)"]
-    B["2. Choose action<br/>a_t = 0: no move<br/>a_t = 1-20: s1 → s2<br/>a_t = 21-40: s2 → s1"]
-    C["3. Move bikes<br/>x_t = min(k, b_source, 20 - b_target)"]
-    D["4. Update inventory after move<br/>b_source_after = b_source - x_t<br/>b_target_after = b_target + x_t"]
-    E["5. Serve departures<br/>served_i_t = min(b_i_after, d_i_t)<br/>unmet_i_t = max(0, d_i_t - b_i_after)"]
-    F["6. Add arrivals and clip inventory<br/>b_i_next = min(20, b_i_after - served_i_t + r_i_t)"]
-    G["7. Update time<br/>h = h + 1"]
+flowchart LR
+    A["Observe state"]
+    B["Choose action"]
+    C["Move bikes"]
+    D["Serve departures"]
+    E["Add arrivals"]
+    F["Clip inventory"]
+    G["Update time"]
 
     A --> B --> C --> D --> E --> F --> G
+```
+
+Detailed transition equations:
+
+```text
+1. Observe state:
+   s_t = (h_t, b1_t, b2_t)
+
+2. Choose action:
+   a_t = 0       : no move
+   a_t = 1-20    : move bikes from s1 to s2
+   a_t = 21-40   : move bikes from s2 to s1
+
+3. Move bikes:
+   x_t = min(k, b_source, 20 - b_target)
+
+4. Update inventory after move:
+   b_source_after = b_source - x_t
+   b_target_after = b_target + x_t
+
+5. Serve departures:
+   served_i_t = min(b_i_after, d_i_t)
+   unmet_i_t  = max(0, d_i_t - b_i_after)
+
+6. Add arrivals and clip inventory:
+   b_i_next = min(20, b_i_after - served_i_t + r_i_t)
+
+7. Update time:
+   h = h + 1
 ```
 
 Here, `b_i` is the inventory at station `i`, `d_i_t` is hourly departure demand, `r_i_t` is hourly arrivals, and `x_t` is the number of bikes actually moved. Inventory is always kept between 0 and 20.
