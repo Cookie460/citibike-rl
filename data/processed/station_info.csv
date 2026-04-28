@@ -1,0 +1,3 @@
+station_label,station_id,station_name,departures,arrivals,total_activity,net_flow,imbalance
+s1,JC115,Grove St PATH,46866,49659,96525,-2793,2793
+s2,JC022,Oakland Ave,7969,6456,14425,1513,1513
